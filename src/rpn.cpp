@@ -16,12 +16,13 @@ namespace RPN {
 		// Private helper functions
 
 		// Array of all possible operators
+		// Ordered in priority
 		std::vector<std::string> operators {
-			"+",
-			"-",
+			"^",
 			"*",
 			"/",
-			"^"
+			"+",
+			"-"
 		};
 
 		// A struct that represents a lead in a binary tree
@@ -133,11 +134,11 @@ namespace RPN {
 
 				// Switch based on chosen operator
 				switch(pos - operators.begin()) {
-					case 0: result = a + b; break;
-					case 1: result = a - b; break;
-					case 2: result = a * b; break;
-					case 3: result = a / b; break;
-					case 4: result = std::pow(a, b); break;
+					case 0: result = std::pow(a, b); break;
+					case 1: result = a * b; break;
+					case 2: result = a / b; break;
+					case 3: result = a + b; break;
+					case 4: result = a - b; break;
 					default: throw std::runtime_error("operator " + exp + " not implemented");
 				}
 
