@@ -91,7 +91,105 @@ namespace RPN {
 	}
 
 	// Get RPN statement from infix expression
-	std::string FromInfix(std::string infix);
+	std::string FromInfix(std::string infix) {
+		// Create a string to hold the results
+		std::string result = "";
+
+		// Create stack to hold the operators
+		std::stack<std::string> stack;
+
+		// Iterate over all chars in the passed string
+		for(auto ch : infix) {
+			// Get position of character in the operators list
+			auto index = std::find(operators.begin(), operators.end(),
+				std::string(1, ch));
+
+			// If ch is an operator
+			if(index != operators.end()) {
+				// If stack is empty or contains left parenthasis
+				if(stack.size() == 0 || stack.top() == "(") {
+					// Push to stack
+					stack.push(*index);
+				}
+
+				// Else, pop the stack until an operator is found with a 
+				// prescedence lower or greater (dependant on associative-ness)
+				// than the current operator, the push the current operator to
+				// the stack
+				else if (index - operators.begin() == 0) {
+					// '^' is first item in operators list and right-associative
+					// NOTE: as ^ is the first item in the operators list, it
+					// always has the highest precedence, so can just be pushed
+					// to the stack, this will have to be rethought if more
+					// operators are added
+					stack.push(*index);
+				}
+				else {
+					// All other operators in the list are left-associative
+					// Therefore, pop all operators off the stack to the output
+					// until the operator atop the stack has a prescedence less
+					// than or equal to that of the character
+
+					// Get index of the top of the stack
+					auto top = std::find(operators.begin(), operators.end(),
+						stack.top());
+					
+					// While item on stack has greater prescedence
+					// ie. appears first in list, so has smaller iterator
+					while(top < index) {
+						// Push to output
+						result += stack.top();
+						stack.pop();
+
+						// Check stack contains item
+						if(stack.size() == 0) {
+							break;
+						}
+						else {
+							top = std::find(operators.begin(), operators.end(),
+								stack.top());
+						}				
+					}
+
+					// Then, push operator to stack
+					stack.push(*index);
+				}
+			}
+			// If ch is a left parenthesis
+			else if(ch == '(') {
+				// Push '(' to the stack
+				stack.push("(");
+			}
+			// Right parenthesis
+			else if(ch == ')') {
+				// Pop and push the contents of the stack until a ( is found
+				while(stack.top() != "(") {
+					result += stack.top();
+					stack.pop();
+				}
+
+				// Pop the "("
+				stack.pop();
+			}
+			// If ch is a space
+			else if(ch == ' ') {
+				continue;
+			}
+			// Else, ch is an operand
+			else {
+				// Push to string
+				result += ch;
+			}
+		}
+
+		// Push all operators on stack to result string
+		while(stack.size() != 0) {
+			result += stack.top();
+			stack.pop();
+		}
+
+		return result;
+	}
 
 	// Evaluate an RPN statement
 	double Evaluate(std::string string) {
