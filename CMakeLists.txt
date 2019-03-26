@@ -1,7 +1,11 @@
 cmake_minimum_required (VERSION 3.10)
-project (cpp-rpn)
+project (rpn-calculator)
+
+find_package(SFML 2 REQUIRED system window graphics network audio)
+find_package(TGUI 0.8 REQUIRED)
 
 include_directories (include)
-file (GLOB cpp-rpn_SRC "src/*.cpp")
+file (GLOB rpn-calculator_SRC "src/*.cpp")
 
-add_executable (cpp-rpn ${cpp-rpn_SRC})
+add_executable (rpn-calculator ${rpn-calculator_SRC})
+target_link_libraries(rpn-calculator ${TGUI_LIBRARY} ${SFML_LIBRARIES})
