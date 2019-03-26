@@ -2,25 +2,35 @@
 
 #include "rpn.hpp"
 
-#include <iostream>
 #include <string>
 
+#include <TGUI/TGUI.hpp>
+
 int main() {
-	std::string input = "4 + 3";
-	std::cout << input << "\n";
+	// Create render window
+	sf::RenderWindow window{{800, 600}, "RPN Calculator"};
+	tgui::Gui gui{window};
 
-	do {
-		auto calc = RPN::FromInfix(input);
-		
-		try {
-			std::cout << calc << "= " << RPN::Evaluate(calc) << "\n";
-		}
-		catch (const std::invalid_argument& e) {
-			std::cout << "invalid rpn statement\n";
+	// Enter main window loop
+	while(window.isOpen()) {
+		sf::Event event;
+
+		// Process all window events
+		while(window.pollEvent(event)) {
+			// Window closed
+			if(event.type == sf::Event::Closed) {
+				window.close();
+			}
+
+			// Send event to gui
+			gui.handleEvent(event);
 		}
 
-		std::getline(std::cin, input);
-	} while(input != "");
+		// Clear window and draw to it
+		window.clear();
+		gui.draw();
+		window.display();
+	}
 
 	return 0;
 }

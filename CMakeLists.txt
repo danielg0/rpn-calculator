@@ -8,4 +8,4 @@ include_directories (include)
 file (GLOB rpn-calculator_SRC "src/*.cpp")
 
 add_executable (rpn-calculator ${rpn-calculator_SRC})
-target_link_libraries(rpn-calculator ${TGUI_LIBRARY} ${SFML_LIBRARIES})
+target_link_libraries(rpn-calculator sfml-graphics sfml-audio tgui)
