@@ -25,7 +25,7 @@ namespace RPN {
 			"-"
 		};
 
-		// A struct that represents a lead in a binary tree
+		// A struct that represents a node in a binary tree
 		struct RPNTree {
 			// Pointers to the left and right nodes
 			std::shared_ptr<RPNTree> left;
@@ -75,17 +75,34 @@ namespace RPN {
 			std::shared_ptr<std::string> results) {
 			// Traverse left tree if not null
 			if(tree->left != nullptr) {
-				*results += "(";
+				// Add brackets if child is an operator
+				auto opcode = std::find(operators.begin(), operators.end(), tree->left->data) != operators.end();
+
+				if(opcode) {
+					*results += "(";
+				}
+
 				Inorder(tree->left, results);
-				*results += ")";
+
+				if(opcode) {
+					*results += ")";
+				}
 			}
 
-			*results += tree->data + " ";
+			*results += tree->data;
 
 			if(tree->right != nullptr) {
-				*results += "(";
+				auto opcode = std::find(operators.begin(), operators.end(), tree->right->data) != operators.end();
+
+				if(opcode) {
+					*results += "(";
+				}
+
 				Inorder(tree->right, results);
-				*results += ")";
+				
+				if(opcode) {
+					*results += ")";
+				}
 			}
 		}
 	}
