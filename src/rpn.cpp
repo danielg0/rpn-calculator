@@ -109,11 +109,14 @@ namespace RPN {
 
 	// Get RPN statement from infix expression
 	std::string FromInfix(std::string infix) {
-		// Create a string to hold the results
-		std::string result = "";
+		// Create a vector to hold the results
+		std::vector<std::string> result;
 
 		// Create stack to hold the operators
 		std::stack<std::string> stack;
+
+		// Create buffer to hold current number being processed
+		std::string buffer = "";
 
 		// Iterate over all chars in the passed string
 		for(auto ch : infix) {
@@ -123,6 +126,11 @@ namespace RPN {
 
 			// If ch is an operator
 			if(index != operators.end()) {
+				if(buffer != "") {
+					result.push_back(buffer);
+					buffer = "";
+				}
+
 				// If stack is empty or contains left parenthasis
 				if(stack.size() == 0 || stack.top() == "(") {
 					// Push to stack
@@ -155,7 +163,7 @@ namespace RPN {
 					// ie. appears first in list, so has smaller iterator
 					while(top < index) {
 						// Push to output
-						result += stack.top();
+						result.push_back(stack.top());
 						stack.pop();
 
 						// Check stack contains item
@@ -174,14 +182,26 @@ namespace RPN {
 			}
 			// If ch is a left parenthesis
 			else if(ch == '(') {
+				// Empty string buffer
+				if(buffer != "") {
+					result.push_back(buffer);
+					buffer = "";
+				}
+
 				// Push '(' to the stack
 				stack.push("(");
 			}
 			// Right parenthesis
 			else if(ch == ')') {
+				// Empty string buffer
+				if(buffer != "") {
+					result.push_back(buffer);
+					buffer = "";
+				}
+
 				// Pop and push the contents of the stack until a ( is found
 				while(stack.top() != "(") {
-					result += stack.top();
+					result.push_back(stack.top());
 					stack.pop();
 				}
 
@@ -190,22 +210,39 @@ namespace RPN {
 			}
 			// If ch is a space
 			else if(ch == ' ') {
-				continue;
+				// Empty string buffer
+				if(buffer != "") {
+					result.push_back(buffer);
+					buffer = "";
+				}
 			}
 			// Else, ch is an operand
 			else {
-				// Push to string
-				result += ch;
+				// Add to buffer
+				buffer += ch;
 			}
+		}
+
+		// Push string buffer		
+		if(buffer != "") {
+			result.push_back(buffer);
+			buffer = "";
 		}
 
 		// Push all operators on stack to result string
 		while(stack.size() != 0) {
-			result += stack.top();
+			result.push_back(stack.top());
 			stack.pop();
 		}
 
-		return result;
+		// Push every entry in result to a string, seperated by a space
+		std::string str;
+		for(auto i : result) {
+			str += i;
+			str += " ";
+		}
+
+		return str;
 	}
 
 	// Evaluate an RPN statement
