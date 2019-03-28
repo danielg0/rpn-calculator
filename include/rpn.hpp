@@ -4,8 +4,12 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace RPN {
+	// Return the supported operators
+	std::vector<std::string> Operators();
+
 	// Get RPN statement from infix expression
 	std::string FromInfix(std::string infix);
 

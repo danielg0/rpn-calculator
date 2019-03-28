@@ -107,6 +107,10 @@ namespace RPN {
 		}
 	}
 
+	std::vector<std::string> Operators() {
+		return operators;
+	}
+
 	// Get RPN statement from infix expression
 	std::string FromInfix(std::string infix) {
 		// Create a vector to hold the results
