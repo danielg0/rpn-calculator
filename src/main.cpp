@@ -35,6 +35,7 @@ int main() {
 	// Create render window and attach gui
 	sf::RenderWindow window {{300, 400}, "RPN Calculator",
 		sf::Style::Titlebar | sf::Style::Close};
+	window.setFramerateLimit(30);
 	tgui::Gui gui {window};
 
 	// Setup gui
