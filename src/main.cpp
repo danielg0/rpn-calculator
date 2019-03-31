@@ -46,15 +46,21 @@ int main() {
 	layout->setPosition("0%", "30%");
 	gui.add(layout);
 
-	// Create a text box to display the calculation and it's result
+	// Create a text box to display the calculation, it in rpn and the result
 	auto txtStatement = tgui::TextBox::create();
 	txtStatement->setSize("100%", "10%");
 	txtStatement->setReadOnly(true);
 	gui.add(txtStatement);
 
+	auto txtRpn = tgui::TextBox::create();
+	txtRpn->setSize("100%", "10%");
+	txtRpn->setPosition("0%", "10%");
+	txtRpn->setReadOnly(true);
+	gui.add(txtRpn);
+
 	auto txtResult = tgui::TextBox::create();
-	txtResult->setSize("100%", "20%");
-	txtResult->setPosition("0%", "10%");
+	txtResult->setSize("100%", "10%");
+	txtResult->setPosition("0%", "20%");
 	txtResult->setReadOnly(true);
 	gui.add(txtResult);
 
@@ -125,36 +131,48 @@ int main() {
 
 			// Send event to gui
 			gui.handleEvent(event);
+		}
+		// If update caused a change in the statement value and tripping of the
+		// UPDATE flag
+		if(UPDATE) {
+			// Get result of calculation
+			std::string result;
+			std::string rpn;
 
-			if(UPDATE) {
-				// Get result of calculation
-				std::string result;
-
-				try {
-					// Attempt to evaluate the statement and store it in result
-					result = std::to_string(RPN::Evaluate(RPN::FromInfix(STATEMENT)));
-				
-					// Remove trailing zeros
-					result.erase(result.find_last_not_of('0') + 1,
-						std::string::npos);
-					result.erase(result.find_last_not_of('.') + 1,
-						std::string::npos);
-				}
-				catch(const std::invalid_argument& e) {
-					result = "invalid";
-				}
-
-				// If statement is empty, set result to 0
-				if(STATEMENT == "") {
-					result = "0";
-				}
-
-				// Output result and STATEMENT to text objects
-				txtStatement->setText(STATEMENT);
-				txtResult->setText(result);
-
-				UPDATE = false;
+			// Attempt to convert to RPN
+			try {
+				rpn = RPN::FromInfix(STATEMENT);
 			}
+			catch(const std::invalid_argument& e) {
+				rpn = "Invalid";
+			}
+
+			try {
+				// Attempt to evaluate the statement and store it in result
+				result = std::to_string(RPN::Evaluate(rpn));
+			
+				// Remove trailing zeros
+				result.erase(result.find_last_not_of('0') + 1,
+					std::string::npos);
+				result.erase(result.find_last_not_of('.') + 1,
+					std::string::npos);
+			}
+			catch(const std::invalid_argument& e) {
+				result = "Invalid";
+			}
+
+			// If statement is empty, set result to 0
+			if(STATEMENT == "") {
+				result = "0";
+				rpn = "";
+			}
+
+			// Output result and STATEMENT to text objects
+			txtStatement->setText(STATEMENT);
+			txtRpn->setText(rpn);
+			txtResult->setText(result);
+
+			UPDATE = false;
 		}
 
 		// Clear window and draw to it
