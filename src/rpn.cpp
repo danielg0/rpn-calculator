@@ -314,6 +314,12 @@ namespace RPN {
 			}
 		}
 
+		// If there are still more than two values on the stack, the rpn
+		// expression is invalid
+		if(stack.size() > 1) {
+			throw std::invalid_argument("two or more values left on the stack");
+		}
+
 		// Return the number on top of the stack
 		return stack.top();
 	}
