@@ -242,8 +242,7 @@ namespace RPN {
 		// Push every entry in result to a string, seperated by a space
 		std::string str;
 		for(auto i : result) {
-			str += i;
-			str += " ";
+			str += i + " ";
 		}
 
 		return str;
