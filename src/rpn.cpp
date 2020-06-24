@@ -32,7 +32,7 @@ namespace RPN {
 			std::shared_ptr<RPNTree> right;
 
 			// Weak pointer to this node's parent
-			// So child doesn't own parent and cause memory leak			
+			// So child doesn't own parent and cause memory leak
 			std::weak_ptr<RPNTree> parent;
 
 			// String representing the number or operation this node represents
@@ -99,7 +99,7 @@ namespace RPN {
 				}
 
 				Inorder(tree->right, results);
-				
+
 				if(opcode) {
 					*results += ")";
 				}
@@ -141,7 +141,7 @@ namespace RPN {
 					stack.push(*index);
 				}
 
-				// Else, pop the stack until an operator is found with a 
+				// Else, pop the stack until an operator is found with a
 				// prescedence lower or greater (dependant on associative-ness)
 				// than the current operator, the push the current operator to
 				// the stack
@@ -162,7 +162,7 @@ namespace RPN {
 					// Get index of the top of the stack
 					auto top = std::find(operators.begin(), operators.end(),
 						stack.top());
-					
+
 					// While item on stack has greater prescedence
 					// ie. appears first in list, so has smaller iterator
 					while(top < index) {
@@ -177,7 +177,7 @@ namespace RPN {
 						else {
 							top = std::find(operators.begin(), operators.end(),
 								stack.top());
-						}				
+						}
 					}
 
 					// Then, push operator to stack
@@ -227,7 +227,7 @@ namespace RPN {
 			}
 		}
 
-		// Push string buffer		
+		// Push string buffer
 		if(buffer != "") {
 			result.push_back(buffer);
 			buffer = "";
@@ -384,7 +384,6 @@ namespace RPN {
 				else if(tree->left == nullptr) {
 					tree->left = std::make_shared<RPNTree>(exp);
 					tree->left->parent = tree;
-				
 				}
 			}
 		}
